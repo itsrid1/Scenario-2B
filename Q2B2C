@@ -1,0 +1,117 @@
+clc;
+clear;
+
+%Molar masses kg/kmol
+
+li= 6.9;
+ni=58.7;
+mn=54.9;
+c=12;
+na=23;
+o=16;
+co=58.9;
+s=32.1;
+
+limo2=(li+ni/3+ mn/3 + co/3 + 2*o);
+coco3=co+c+3*o;
+mnco3=mn+c+3*o;
+nico3=ni+c+3*o;
+li2co3=(li*2) + c + (o*3) ;
+o2= 2*o ;
+co2= c+ 2* o;
+na2so4= (2*na)+ s+ (4*o) ;
+na2co3= (2*na)+ c + (3*o) ;
+niso4= ni+ s+ 4*o ;
+coso4= co+ s+ 4*o ;
+mnso4= mn+ s+ 4*o ;
+
+%Calculation
+mass_flowrate = (35*10^9)/(249) %kg/y
+
+molar_flowrate_nmc =  mass_flowrate / limo2 %kmol / year
+xi2= molar_flowrate_nmc/4 %4 soichiometry
+
+xi1=4*xi2 %1:4 stoichiometry 
+
+%molecular species balance eq2
+mf_li2co3= 1.05* 2*xi2 ; %1:1 stoichiometry 5% excess
+mf_li2co3out=mf_li2co3 - 2*xi2
+mf_o2=xi2 ; %1:1 stoichiometry
+mf_co2=6* xi2 ; %1:1 stoichiometry
+mf_m= 4*xi2;
+
+%molecular species balance eq1
+mf_mco3=xi1 ; %1:1 stoichiometry
+mf_na2so4=xi1 ; %1:1 stoichiometry
+mf_na2co3=xi1 ; %1:1 stoichiometry
+mf_mso4=xi1/0.98 ; %1:1 stoichiometry and 98% conversion
+
+mf_mso4out= mf_mso4-xi1;
+mf_coso4out=mf_mso4out/3;
+mf_niso4out=mf_mso4out/3;
+mf_mnso4out=mf_mso4out/3;
+
+
+%atomic species balance eq2
+%molar flowrates in  kmol/y
+%assuming equal mole fractqions of each metal in nmc
+mf_nico3=1/3*mf_mco3 ; 
+mf_coco3=1/3*mf_mco3  ; 
+mf_mnco3=1/3* mf_mco3 ; 
+mf_niso4=1/3* mf_mso4 ;
+mf_mnso4= 1/3* mf_mso4;
+mf_coso4= 1/3* mf_mso4;
+
+
+
+%molar to mass amounts
+%amounts in  kg/y
+mff_nico3= mf_nico3*nico3 
+mff_coco3= mf_coco3*coco3 
+mff_mnco3= mf_mnco3*mnco3 
+mff_li2co3= mf_li2co3 * li2co3
+mff_li2co3out = mf_li2co3out * li2co3
+mff_o2= mf_o2 * o2 
+mff_co2= mf_co2 * co2 
+mff_na2so4= mf_na2so4 * na2so4 
+mff_na2co3= mf_na2co3 * na2co3 
+
+mff_niso4= mf_niso4 * niso4 
+mff_coso4= mf_coso4 * coso4 
+mff_mnso4= mf_mnso4 * mnso4 
+
+mff_mso4out= (mf_mso4- xi1 )* ((coso4+niso4+mnso4)/3)
+mff_coso4out= mf_coso4out*coso4
+mff_niso4out= mf_niso4out*niso4
+mff_mnso4out= mf_mnso4out*mnso4
+
+%flowrates in kg/s assuming 8150 h/y operation
+mfff_nico3= mff_nico3/29340000
+mfff_coco3= mff_coco3/ 29340000
+mfff_mnco3= mff_mnco3 /29340000
+mfff_li2co3=mff_li2co3 / 29340000
+mfff_o2=mff_o2 / 29340000
+mfff_co2=mff_co2 / 29340000
+mfff_na2so4=mff_na2so4 / 29340000
+mfff_na2co3=mff_na2co3 / 29340000
+
+mfff_niso4= mff_niso4 /29340000
+mfff_coso4=mff_coso4 /29340000
+mfff_mnso4=mff_mnso4 /29340000
+mfff_mnso4= mass_flowrate /29340000
+mff_nmc=mass_flowrate/(8150*60*60)
+mfff_li2co3out=mff_li2co3out/(8150*60*60)
+
+mfff_mso4out= mff_mso4out/(8150*60*60)
+mfff_coso4out= mff_coso4out /(8150*60*60)
+mfff_niso4out= mff_niso4out/(8150*60*60)
+mfff_mnso4out= mff_mnso4out/(8150*60*60)
+
+total_salt= (mf_mso4out +mf_mco3+mf_na2so4) %%kmol/y
+volumetric= (mf_mso4out +mf_mco3+mf_na2so4)/(1.5*8150*60) %m^3/min
+tau=(5*10^-6/1.5)/(3*60*9.2*10^-11)
+volume= volumetric * tau %m^3
+volume2=volume*1.1 %accounting for water
+csa= (pi*(5^2)*0.25) %m2
+height= volume2/(2*csa)
+
